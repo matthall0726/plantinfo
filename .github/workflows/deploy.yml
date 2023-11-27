@@ -26,8 +26,8 @@ jobs:
         uses: google-github-actions/auth@v0
         with:
           credentials_json: ${{ secrets.GCP_AUTH }}
+          project_id: discord-api-406418
 
       - name: Deploy to GCP
         run: |
-          gcloud config set project discord-api-406418
           gcloud app deploy
