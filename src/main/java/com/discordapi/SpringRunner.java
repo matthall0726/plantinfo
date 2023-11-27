@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,9 +27,12 @@ public class SpringRunner {
 	@Autowired
 	PlantRepository plantRepository;
 
+	@Value("sm://Discord_TOKEN")
+	static String discordToken;
+
 	public static void main(String[] args) {
 
-		JDA jda = JDABuilder.createLight("MTE3ODUwMjY3MDA2NDAyNTcyMA.G8Mgsd.ZhxezuAw7eK2EdiNMgK8LFJENPiOZ6izRKt0cQ", Collections.emptyList())
+		JDA jda = JDABuilder.createLight(discordToken, Collections.emptyList())
 				.addEventListeners(new SlashCommand())
 				.setActivity(Activity.watching("PORN"))
 				.build();
