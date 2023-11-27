@@ -6,7 +6,6 @@ import com.discordapi.SlashCommands.SlashCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +26,7 @@ public class SpringRunner {
 	@Autowired
 	PlantRepository plantRepository;
 
-	@Value("sm://Discord_TOKEN")
+	@Value("sm://projects/1013820151125/secrets/Discord_TOKEN")
 	static String discordToken;
 
 	public static void main(String[] args) {
