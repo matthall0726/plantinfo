@@ -1,1 +1,1 @@
-Discord API
+Discord API (Plant Bot)
