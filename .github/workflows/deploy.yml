@@ -47,7 +47,7 @@ jobs:
       - name: Copy JAR to VM
         run: |
           echo "Debug: Copying $JAR_FILE to VM"
-          gcloud compute scp $JAR_FILE discord-plant-bot:~/ --project=discord-api-406418 --zone=us-west4-b
+          gcloud compute scp $JAR_FILE discord-plant-bot:~/$JAR_FILE --project=discord-api-406418 --zone=us-west4-b
 
       - name: Install Required Dependencies and Deploy
         run: |
