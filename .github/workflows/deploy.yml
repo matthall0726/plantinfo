@@ -22,14 +22,19 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Debug GCP_AUTH Secret
-        run: echo "${{ secrets.GCP_AUTH }}"
-
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
         with:
           credentials_json: ${{ secrets.GCP_AUTH }}
           project_id: discord-api-406418
+
+      - name: Access secrets from Google Secret Manager
+        run: |
+          export SECRET_NAME=Discord_TOKEN
+          export SECRET_VERSION=latest
+          export SECRET_VALUE=$(gcloud secrets versions access $SECRET_VERSION --secret=$SECRET_NAME --format='get(payload.data)' | base64 -d)
+          echo "Secret Value: $SECRET_VALUE"
+          # You can use $SECRET_VALUE in your Spring application as needed
 
       - name: Deploy to GCP
         run: |
