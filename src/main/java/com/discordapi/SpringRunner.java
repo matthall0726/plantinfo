@@ -26,24 +26,24 @@ public class SpringRunner {
 	@Autowired
 	PlantRepository plantRepository;
 
-	@Value("sm://Discord_TOKEN")
-	static String discordToken;
+//	@Value("sm://Discord_TOKEN")
+//	static String discordToken;
 
 	public static void main(String[] args) {
 
-		JDA jda = JDABuilder.createLight(discordToken, Collections.emptyList())
-				.addEventListeners(new SlashCommand())
-				.setActivity(Activity.watching("PORN"))
-				.build();
+//		JDA jda = JDABuilder.createLight(discordToken, Collections.emptyList())
+//				.addEventListeners(new SlashCommand())
+//				.setActivity(Activity.watching("PORN"))
+//				.build();
 
 
-		jda.updateCommands()
-				.addCommands(
-						Commands.slash("suck", "How hard baby?").setGuildOnly(true),
-						Commands.slash("fart", "WOW THAT WAS A WET ONE. TEHE.").setGuildOnly(true)
-				)
-
-				.queue();
+//		jda.updateCommands()
+//				.addCommands(
+//						Commands.slash("suck", "How hard baby?").setGuildOnly(true),
+//						Commands.slash("fart", "WOW THAT WAS A WET ONE. TEHE.").setGuildOnly(true)
+//				)
+//
+//				.queue();
 
 		SpringApplication.run(SpringRunner.class, args);
 	}
