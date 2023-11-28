@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
@@ -36,6 +36,19 @@ jobs:
           echo "Secret Value: $SECRET_VALUE"
           # You can use $SECRET_VALUE in your Spring application as needed
 
-      - name: Deploy to GCP
+      - name: Copy JAR to VM
         run: |
-          gcloud app deploy --service-account=discord-api-406418@appspot.gserviceaccount.com
+          JAR_FILE=$(ls build/libs/*.jar)
+          gcloud compute scp $JAR_FILE discord-plant-bot:~/
+
+      - name: Copy Secret Manager Credentials to VM
+        run: |
+          gcloud compute scp ~/.config/gcloud/legacy_credentials/$(gcloud config get-value account)/adc.json \
+            discord-plant-bot:~/
+
+      - name: Install Required Dependencies and Deploy
+        run: |
+          gcloud compute ssh discord-plant-bot \
+            --project=discord-api-406418 \
+            --zone=us-west4-b \
+            --command="sudo apt-get update && sudo apt-get install -y openjdk-17-jre && java -jar $JAR_FILE"
