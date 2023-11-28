@@ -36,6 +36,11 @@ jobs:
           echo "Secret Value: $SECRET_VALUE"
           # You can use $SECRET_VALUE in your Spring application as needed
 
+      - name: Debug JAR_FILE Setting
+        run: |
+          JAR_FILE=$(ls build/libs/*.jar)
+          echo "Debug: JAR_FILE set to $JAR_FILE"
+
       - name: Print JAR_FILE
         run: echo "JAR_FILE is $JAR_FILE"
 
