@@ -39,7 +39,7 @@ jobs:
       - name: Copy JAR to VM
         run: |
           JAR_FILE=$(ls build/libs/*.jar)
-          gcloud compute scp $JAR_FILE discord-plant-bot:~/
+          gcloud compute scp $JAR_FILE discord-plant-bot:~/ --project=discord-api-406418 --zone=us-west4-b
 
       - name: Copy Secret Manager Credentials to VM
         run: |
