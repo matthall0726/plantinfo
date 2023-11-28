@@ -26,7 +26,7 @@ public class SpringRunner {
 	@Autowired
 	PlantRepository plantRepository;
 
-	@Value("${sm://Discord_TOKEN}")
+	@Value("sm://Discord_TOKEN")
 	static String discordToken;
 
 	public static void main(String[] args) {
