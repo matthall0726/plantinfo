@@ -41,11 +41,6 @@ jobs:
           JAR_FILE=$(ls build/libs/*.jar)
           gcloud compute scp $JAR_FILE discord-plant-bot:~/ --project=discord-api-406418 --zone=us-west4-b
 
-      - name: Copy Secret Manager Credentials to VM
-        run: |
-          gcloud compute scp ~/.config/gcloud/legacy_credentials/$(gcloud config get-value account)/adc.json \
-            discord-plant-bot:~/ --project=discord-api-406418 --zone=us-west4-b
-
       - name: Install Required Dependencies and Deploy
         run: |
           gcloud compute ssh discord-plant-bot \
