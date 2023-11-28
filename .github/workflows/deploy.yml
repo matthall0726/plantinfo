@@ -38,7 +38,7 @@ jobs:
 
       - name: Debug JAR_FILE Setting
         run: |
-          JAR_FILE=$(ls build/libs/*.jar)
+          JAR_FILE=$(ls build/libs/discordapi-0.0.1-SNAPSHOT.jar)
           echo "Debug: JAR_FILE set to $JAR_FILE"
 
       - name: Print JAR_FILE
