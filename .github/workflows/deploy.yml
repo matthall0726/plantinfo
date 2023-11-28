@@ -46,4 +46,4 @@ jobs:
           gcloud compute ssh discord-plant-bot \
             --project=discord-api-406418 \
             --zone=us-west4-b \
-            --command="sudo apt-get update && sudo apt-get install -y openjdk-17-jre && java -jar $JAR_FILE"
+            --command="sudo apt-get update && sudo apt-get install -y openjdk-17-jre && java -jar ~/discordapi-0.0.1-SNAPSHOT.jar"
