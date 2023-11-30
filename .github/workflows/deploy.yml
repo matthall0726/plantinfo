@@ -9,6 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        java: [17]
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -17,7 +21,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: '${{ matrix.java }}'
 
       - name: Build with Gradle
         run: ./gradlew clean build
@@ -29,17 +33,11 @@ jobs:
           project_id: discord-api-406418
 
       - name: Access secrets from Google Secret Manager
-        run: |
-          export SECRET_NAME=Discord_TOKEN
-          export SECRET_VERSION=latest
-          export SECRET_VALUE=$(gcloud secrets versions access $SECRET_VERSION --secret=$SECRET_NAME --format='get(payload.data)' | base64 -d)
-          echo "Secret Value: $SECRET_VALUE"
-          # You can use $SECRET_VALUE in your Spring application as needed
-
-      - name: Install Required Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openjdk-17-jre
+        uses: google-github-actions/secrets-manager@main
+        with:
+          project: discord-api-406418
+          secrets: Discord_TOKEN
+        id: secrets
 
       - name: Deploy to GCP
         run: |
