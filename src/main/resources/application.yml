@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    password: ${sm://Discord_TOKEN}
