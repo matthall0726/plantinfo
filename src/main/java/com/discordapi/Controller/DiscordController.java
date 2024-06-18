@@ -1,12 +1,10 @@
 package com.discordapi.Controller;
 
-import com.discordapi.Dataholder.PlantInfoData;
 import com.discordapi.Request.PlantRequestBody;
 import com.discordapi.Response.PlantResponse;
-import com.discordapi.Response.PlantResponseList;
-import com.discordapi.SlashCommands.SlashCommand;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoWriteException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -15,7 +13,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.discordapi.SlashCommands.SlashCommand.SlashCommandSetup;
@@ -25,38 +22,74 @@ import static com.discordapi.SlashCommands.SlashCommand.SlashCommandSetup;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DiscordController {
 
+    private static MongoTemplate mongoTemplate;
+
     @Autowired
-    MongoTemplate mongoTemplate;
+    public void setMongoTemplate(MongoTemplate mongoTemplate) {
+        DiscordController.mongoTemplate = mongoTemplate;
+    }
 
 
+    public static Logger LOGGER = LoggerFactory.getLogger(DiscordController.class);
 
     PlantResponse plantResponse;
-    public DiscordController(@Value("${Discord_TOKEN}") String discordToken) {
-        SlashCommandSetup(discordToken);
+
+    public static boolean isDuplicate(String name) {
+        Query findPlants = new Query();
+        findPlants.addCriteria(Criteria.where("plantInfoData.name").is(name));
+        if (mongoTemplate.exists(findPlants, PlantRequestBody.class, "plantInfo")) {
+            return true;
+        }
+        return false;
     }
 
     @PostMapping(value = "postInfo", produces = "application/json")
     @ResponseBody
-    public PlantResponse postInfo(@RequestBody PlantRequestBody plantRequestBody) {
+    public static void postInfo(@RequestBody PlantRequestBody plantRequestBody) {
 
-        mongoTemplate.insert(plantRequestBody, "plantInfo");
-        plantResponse = new PlantResponse();
-        plantResponse.setPlantInfo(plantRequestBody.getPlantInfoData());
-        return plantResponse;
+        try {
+            Query findPlants = new Query();
+            findPlants.addCriteria(Criteria.where("plantInfoData.name").is(plantRequestBody.getPlantInfoData().getName()));
+
+            if (mongoTemplate.exists(findPlants, PlantRequestBody.class, "plantInfo")) {
+                System.err.println("Duplicate Plant Name");
+            } else {
+                mongoTemplate.insert(plantRequestBody, "plantInfo");
+            }
+
+        } catch (MongoWriteException e) {
+
+            if (e.getError().getCode() == 11000) {
+                LOGGER.error("Duplicate key error: The name already exists.", e);
+            } else {
+                // Handle other write errors
+                LOGGER.error("ERROR While inserting document", e);
+            }
+        } catch (Exception e) {
+            // Handle other exceptions
+            LOGGER.error("Unknown Error Caught", e);
+        }
+
+
     }
-
     @CrossOrigin
     @GetMapping("getInfo/{name}")
     @ResponseBody
-    public PlantInfoData getInfo(@PathVariable String name) {
-        List<PlantRequestBody> response = new ArrayList<>();
+    public static List<PlantRequestBody> getInfo(@PathVariable String name) {
+        List<PlantRequestBody> response;
         Query findPlants = new Query();
+        System.out.println(mongoTemplate.collectionExists("plantInfo"));
         findPlants.addCriteria(Criteria.where("plantInfoData.name").is(name));
-        ObjectMapper objectMapper = new ObjectMapper();
-        response = mongoTemplate.find(findPlants, PlantRequestBody.class);
 
-        return response.get(0).getPlantInfoData();
+        response = mongoTemplate.find(findPlants, PlantRequestBody.class, "plantInfo");
+        if (response.isEmpty()) {
+            System.out.println("No documents found for name: " + name);
+        } else {
+            System.out.println(response);
+        }
+
+        return response;
+
     }
-
 
 }

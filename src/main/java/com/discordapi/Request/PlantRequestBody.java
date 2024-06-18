@@ -11,8 +11,5 @@ public class PlantRequestBody {
 
     PlantInfoData plantInfoData = new PlantInfoData();
 
-    public PlantRequestBody() {
-
-    }
 
 }
