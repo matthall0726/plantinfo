@@ -67,7 +67,7 @@ public class SlashCommand extends ListenerAdapter {
                 if (isDuplicate(name)) {
                     EmbedBuilder responseEmbed = new EmbedBuilder()
                             .setTitle("Response Error")
-                            .setDescription("The plant name already exists in the database. NIGGGGAAAAAAAAA")
+                            .setDescription("The plant name already exists in the database. ")
                             .setColor(Color.RED);
                     event.replyEmbeds(responseEmbed.build()).queue();
                 } else {
